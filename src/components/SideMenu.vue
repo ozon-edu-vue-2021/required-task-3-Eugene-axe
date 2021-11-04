@@ -92,6 +92,7 @@ export default {
   },
   mounted() {
     this.makeChart();
+    this.recountTable();
   },
   updated() {
     if (this.$refs.chart) {
@@ -105,6 +106,13 @@ export default {
     loadTables() {
       this.tables = tables;
     },
+    recountTable() {
+      this.legend.forEach((legItem) => {
+        legItem.counter = this.tables.filter(
+          (tableItem) => tableItem.group_id === legItem.group_id
+        ).length;
+      });
+    },
     closeProfile() {
       this.$emit("update:isUserOpenned", false);
     },
@@ -113,6 +121,7 @@ export default {
         this.closeProfile();
       }
     },
+
     makeChart() {
       const legendChartData = {
         labels: this.legend.map((legendItem) => legendItem.text),
@@ -120,12 +129,7 @@ export default {
           {
             label: "Леген подожди подожди да ",
             backgroundColor: this.legend.map((legendItem) => legendItem.color),
-            data: this.legend.map(
-              (legendItem) =>
-                this.tables.filter(
-                  (tableItem) => tableItem.group_id === legendItem.group_id
-                ).length
-            ),
+            data: this.legend.map((legendItem) => legendItem.counter),
           },
         ],
       };
